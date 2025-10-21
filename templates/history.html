@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="history-container">
+    <h1>📜 Analysis History</h1>
+    <p class="subtitle">Recent resume analyses</p>
+
+    {% if analyses %}
+    <div class="history-list">
+        {% for analysis in analyses %}
+        <div class="history-item">
+            <div class="history-header">
+                <h3>{{ analysis.job_title }}</h3>
+                <span class="match-badge {% if analysis.match_percentage >= 70 %}high{% elif analysis.match_percentage >= 50 %}medium{% else %}low{% endif %}">
+                    {{ analysis.match_percentage|round|int }}% Match
+                </span>
+            </div>
+            <div class="history-meta">
+                <span>📅 {{ analysis.created_at.strftime('%b %d, %Y') }}</span>
+                <span>🕐 {{ analysis.created_at.strftime('%I:%M %p') }}</span>
+            </div>
+            <a href="{{ url_for('main.results', session_id=analysis.session_id) }}" class="btn btn-small">
+                View Details →
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No analyses yet. Start your first analysis!</p>
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary">
+            🚀 New Analysis
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

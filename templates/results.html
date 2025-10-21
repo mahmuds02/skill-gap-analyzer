@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="results-container">
+    <div class="results-header">
+        <h1>📊 Analysis Results</h1>
+        <p class="job-title">{{ analysis.job_title }}</p>
+        <p class="timestamp">Analyzed on {{ analysis.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+    </div>
+
+    <!-- Match Percentage -->
+    <div class="match-score">
+        <div class="score-circle">
+            <div class="score-value">{{ analysis.match_percentage|round|int }}%</div>
+            <div class="score-label">Match</div>
+        </div>
+        <div class="match-stats">
+            <div class="stat">
+                <span class="stat-value">{{ analysis.total_skills_matched }}</span>
+                <span class="stat-label">Skills Matched</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value">{{ analysis.total_skills_missing }}</span>
+                <span class="stat-label">Skills Missing</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value">{{ analysis.total_skills_required }}</span>
+                <span class="stat-label">Total Required</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Feedback -->
+    <div class="feedback-box">
+        <h3>💡 AI Career Advice</h3>
+        <p>{{ analysis.ai_feedback }}</p>
+    </div>
+
+    <!-- Skills Breakdown -->
+    <div class="skills-section">
+        <h2>🎯 Skills Breakdown</h2>
+        
+        <div class="skills-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Skill</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for skill in analysis.skills %}
+                    <tr class="skill-row status-{{ skill.status }}">
+                        <td class="skill-name">{{ skill.skill_name }}</td>
+                        <td class="skill-status">
+                            {% if skill.status == 'present' %}
+                                <span class="badge badge-present">✅ Present</span>
+                            {% elif skill.status == 'partial' %}
+                                <span class="badge badge-partial">⚠️ Partial</span>
+                            {% else %}
+                                <span class="badge badge-missing">❌ Missing</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary">
+            🔄 New Analysis
+        </a>
+        <a href="{{ url_for('main.history') }}" class="btn btn-secondary">
+            📜 View History
+        </a>
+    </div>
+
+    <!-- Session Info -->
+    <div class="session-info">
+        <p>Session ID: <code>{{ analysis.session_id }}</code></p>
+        <p><small>Save this link to access this analysis later</small></p>
+    </div>
+</div>
+{% endblock %}
